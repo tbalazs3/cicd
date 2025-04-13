@@ -3,7 +3,7 @@ name: Deploy to Oracle
 on:
   push:
     branches:
-      - 
+      - test-ci
 
 jobs:
   build-and-deploy:
@@ -14,13 +14,13 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Log in to DockerHub
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
     - name: Build Docker image
-      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/flask-app:latest .
+      run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/test-ci-image:latest .
 
     - name: Push Docker image
-      run: docker push ${{ secrets.DOCKER_USERNAME }}/flask-app:latest
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/test-ci-image:latest
 
     - name: Deploy via SSH
       uses: appleboy/ssh-action@v1.0.0
@@ -29,7 +29,7 @@ jobs:
         username: ${{ secrets.ORACLE_USER }}
         key: ${{ secrets.ORACLE_SSH_KEY }}
         script: |
-          docker pull ${{ secrets.DOCKER_USERNAME }}/flask-app:latest
-          docker stop flask-app || true
-          docker rm flask-app || true
-          docker run -d -p 8080:8080 --name flask-app ${{ secrets.DOCKER_USERNAME }}/flask-app:latest
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/test-ci-image:latest
+          docker stop test-ci-image || true
+          docker rm test-ci-omage || true
+          docker run -d -p 8080:8080 --name test-ci-image ${{ secrets.DOCKER_USERNAME }}/tet-ci-image:latest
