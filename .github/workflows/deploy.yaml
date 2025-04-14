@@ -38,8 +38,8 @@ jobs:
         key: ${{ secrets.ORACLE_SSH_KEY }}
         script: |
           export DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
-          ls -la
-          echo "pwd: " | pwd
+          envsubst < .kubernetes/test-ci-deployment.yaml | kubectl apply -f -
+          kubectl apply -f .kubernetes/test-ci-service.yaml
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/test-ci-image:latest
           docker stop test-ci-image || true
           docker rm test-ci-image || true
