@@ -21,6 +21,9 @@ jobs:
 
     - name: Push Docker image
       run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/test-ci-image:latest
+    
+    - name: Copy files to target VM
+      run:  ls -la | pwd | find -name "kubernetes"
 
     - name: Deploy via SSH
       uses: appleboy/ssh-action@v1.0.0
