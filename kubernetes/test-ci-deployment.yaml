@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-ci-image
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-ci
+  template:
+    metadata:
+      labels:
+        app: test-ci
+    spec:
+      containers:
+      - name: test-ci-container
+        image: ${DOCKERHUB_USERNAME}/test-ci-image:latest
+        port: 8080
