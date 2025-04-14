@@ -22,11 +22,12 @@ jobs:
     - name: Push Docker image
       run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/test-ci-image:latest
     
-    - name: Add host to known host
-      run: ssh-keyscan -H 152.70.173.43 >> ~/.ssh/known_hosts
-    
     - name: Copy files to target VM
-      run:  echo "${{ secrets.ORACLE_SSH_KEY }}" > ssh-key.pem | scp -i ssh-key.pem -r ./kubernetes ${{ secrets.ORACLE_USER }}@${{ secrets.ORACLE_HOST }}:/home/${{ secrets.ORACLE_USER }}
+      run: |
+        echo "${{ secrets.ORACLE_SSH_KEY }}" > ssh-key.pem
+        chmod 600 ssh-key.pem
+        ssh-keyscan -H ${{ secrets.ORACLE_HOST }} >> ~/.ssh/known_hosts
+        scp -i ssh-key.pem -r ./kubernetes ${{ secrets.ORACLE_USER }}@${{ secrets.ORACLE_HOST }}:/home/${{ secrets.ORACLE_USER }}
 
     - name: Deploy via SSH
       uses: appleboy/ssh-action@v1.0.0
