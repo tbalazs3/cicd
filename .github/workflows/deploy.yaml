@@ -24,8 +24,10 @@ jobs:
     
     - name: Copy files to target VM
       run: |
+        mkdir -p ~/.ssh
         echo "${{ secrets.ORACLE_SSH_KEY }}" > ssh-key.pem
         chmod 600 ssh-key.pem
+        ssh-keyscan -H ${{ secrets.ORACLE_HOST }} >> ~/.ssh/known_hosts
         scp -i ssh-key.pem -r ./kubernetes ${{ secrets.ORACLE_USER }}@${{ secrets.ORACLE_HOST }}:/home/${{ secrets.ORACLE_USER }}
 
     - name: Deploy via SSH
