@@ -29,8 +29,10 @@ jobs:
         username: ${{ secrets.ORACLE_USER }}
         key: ${{ secrets.ORACLE_SSH_KEY }}
         script: |
+          export DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
+          ls -la
+          echo "pwd: " | pwd
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/test-ci-image:latest
-          pwd
           docker stop test-ci-image || true
           docker rm test-ci-image || true
           docker run -d -p 8080:8080 --name test-ci-image ${{ secrets.DOCKERHUB_USERNAME }}/test-ci-image:latest
